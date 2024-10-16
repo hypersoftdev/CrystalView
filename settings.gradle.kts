@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "CrystalView"
 include(":app")
+include(":crystalView")
