@@ -1,6 +1,6 @@
 # CrystalView
 
-Manage All Type of Permissions
+CrystalView
 
 ## Gradle Integration
 
