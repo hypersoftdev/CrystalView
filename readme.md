@@ -1,4 +1,4 @@
-# PermissionX
+# CrystalView
 
 Manage All Type of Permissions
 
@@ -21,18 +21,18 @@ In your app-level **build.gradle** file, add the library dependency. Use the lat
 
 Groovy Version
 ```
- implementation 'com.github.hypersoftdev:PermissionX:x.x.x'
+ implementation 'com.github.hypersoftdev:CrystalView:x.x.x'
 ```
 Kts Version
 ```
- implementation("com.github.hypersoftdev:PermissionX:x.x.x")
+ implementation("com.github.hypersoftdev:CrystalView:x.x.x")
 ```
 
 # Acknowledgements
 
-This work would not have been possible without the invaluable contributions of [Abdul Moiz](https://github.com/devsekiro). His expertise, dedication, and unwavering support have been instrumental in bringing this project to fruition.
+This work would not have been possible without the invaluable contributions of **Shafqat Hussain**. His expertise, dedication, and unwavering support have been instrumental in bringing this project to fruition.
 
-We are deeply grateful for [AbdulMoiz](https://github.com/devsekiro) involvement and his belief in the importance of this work. His contributions have made a significant impact, and we are honored to have had the opportunity to collaborate with him.
+We are deeply grateful for **Shafqat Hussain** involvement and his belief in the importance of this work. His contributions have made a significant impact, and we are honored to have had the opportunity to collaborate with him.
 
 # LICENSE
 
