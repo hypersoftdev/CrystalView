@@ -48,5 +48,5 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
-    implementation(project(":crystalview123"))
+    implementation(project(":crystalview"))
 }
