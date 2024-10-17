@@ -90,7 +90,7 @@ private fun setupBlurView() {
 
 ## Screenshot
 
-![Demo Image](assets/example.png)
+![Demo Image](assets/screenshot.png)
 
 # Acknowledgements
 
