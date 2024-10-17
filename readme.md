@@ -34,15 +34,15 @@ Kts Version
 
 in XML
 
-<com.hypersoft.crystalview.views.BlurView
-android:id="@+id/blurView"
-android:layout_width="250dp"
-android:layout_height="250dp"
-app:blurOverlayColor="@color/colorOverlay"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintEnd_toEndOf="parent"
-app:layout_constraintStart_toStartOf="parent"
-app:layout_constraintTop_toTopOf="parent" />
+     <com.hypersoft.crystalview.views.BlurView
+     android:id="@+id/blurView"
+     android:layout_width="250dp"
+     android:layout_height="250dp"
+     app:blurOverlayColor="@color/colorOverlay"
+     app:layout_constraintBottom_toBottomOf="parent"
+     app:layout_constraintEnd_toEndOf="parent"
+     app:layout_constraintStart_toStartOf="parent"
+     app:layout_constraintTop_toTopOf="parent" />
 
 in Java/Kotlin Class
 
