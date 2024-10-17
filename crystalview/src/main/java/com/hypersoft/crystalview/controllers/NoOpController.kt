@@ -22,7 +22,7 @@ class NoOpController : BlurController {
         return this
     }
 
-    override fun setFrameClearDrawable(windowBackground: Drawable?): BlurViewFacade {
+    override fun setFrameClearDrawable(frameClearDrawable: Drawable?): BlurViewFacade {
         return this
     }
 

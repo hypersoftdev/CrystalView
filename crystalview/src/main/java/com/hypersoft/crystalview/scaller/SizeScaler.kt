@@ -1,6 +1,5 @@
 package com.hypersoft.crystalview.scaller
 
-import com.hypersoft.crystalview.scaller.SizeScaler.Companion.ROUNDING_VALUE
 import kotlin.math.ceil
 
 
@@ -31,12 +30,12 @@ class SizeScaler(private val scaleFactor: Float) {
         return ceil((value / scaleFactor).toDouble()).toInt()
     }
 
-    class Size internal constructor(val width: Int, val height: Int, val scaleFactor: Float) {
-        override fun equals(o: Any?): Boolean {
-            if (this === o) return true
-            if (o == null || javaClass != o.javaClass) return false
+    class Size internal constructor(val width: Int, val height: Int, private val scaleFactor: Float) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null || javaClass != other.javaClass) return false
 
-            val size = o as Size
+            val size = other as Size
 
             if (width != size.width) return false
             if (height != size.height) return false

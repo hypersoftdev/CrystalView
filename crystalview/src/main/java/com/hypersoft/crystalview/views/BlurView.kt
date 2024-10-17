@@ -1,158 +1,125 @@
-package com.hypersoft.crystalview.views;
+package com.hypersoft.crystalview.views
 
-import static com.hypersoft.crystalview.controllers.PreDrawBlurController.TRANSPARENT;
+import android.content.Context
+import android.content.res.TypedArray
+import android.graphics.Canvas
+import android.os.Build
+import android.util.AttributeSet
+import android.util.Log
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.annotation.ColorInt
+import androidx.annotation.NonNull
+import com.hypersoft.crystalview.R
+import com.hypersoft.crystalview.algo.BlurAlgorithm
+import com.hypersoft.crystalview.controllers.BlurController
+import com.hypersoft.crystalview.controllers.NoOpController
+import com.hypersoft.crystalview.controllers.PreDrawBlurController
+import com.hypersoft.crystalview.effects.RenderEffectBlur
+import com.hypersoft.crystalview.effects.RenderScriptBlur
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.os.Build;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+class BlurView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) {
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
+    companion object {
+        private val TAG = BlurView::class.java.simpleName
+    }
 
-import com.hypersoft.crystalview.R;
-import com.hypersoft.crystalview.algo.BlurAlgorithm;
-import com.hypersoft.crystalview.controllers.BlurController;
-import com.hypersoft.crystalview.controllers.NoOpController;
-import com.hypersoft.crystalview.controllers.PreDrawBlurController;
-import com.hypersoft.crystalview.effects.RenderEffectBlur;
-import com.hypersoft.crystalview.effects.RenderScriptBlur;
-
-/**
- * FrameLayout that blurs its underlying content.
- * Can have children and draw them over blurred background.
- */
-public class BlurView extends FrameLayout {
-
-    private static final String TAG = BlurView.class.getSimpleName();
-
-    BlurController blurController = new NoOpController();
+    private var blurController: BlurController = NoOpController()
 
     @ColorInt
-    private int overlayColor;
+    private var overlayColor: Int = android.graphics.Color.TRANSPARENT
 
-    public BlurView(Context context) {
-        super(context);
-        init(null, 0);
+    init {
+        val a: TypedArray =
+            context.obtainStyledAttributes(attrs, R.styleable.BlurView, defStyleAttr, 0)
+        overlayColor =
+            a.getColor(R.styleable.BlurView_blurOverlayColor, android.graphics.Color.TRANSPARENT)
+        a.recycle()
     }
 
-    public BlurView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(attrs, 0);
-    }
-
-    public BlurView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(attrs, defStyleAttr);
-    }
-
-    private void init(AttributeSet attrs, int defStyleAttr) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.BlurView, defStyleAttr, 0);
-        overlayColor = a.getColor(R.styleable.BlurView_blurOverlayColor, TRANSPARENT);
-        a.recycle();
-    }
-
-    @Override
-    public void draw(@NonNull Canvas canvas) {
-        boolean shouldDraw = blurController.draw(canvas);
-        if (shouldDraw) {
-            super.draw(canvas);
+    override fun draw(canvas: Canvas) {
+        if (blurController.draw(canvas)) {
+            super.draw(canvas)
         }
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        blurController.updateBlurViewSize();
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        blurController.updateBlurViewSize()
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        blurController.setBlurAutoUpdate(false);
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        blurController.setBlurAutoUpdate(false)
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (!isHardwareAccelerated()) {
-            Log.e(TAG, "BlurView can't be used in not hardware-accelerated window!");
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (!isHardwareAccelerated) {
+            Log.e(TAG, "BlurView can't be used in a non-hardware-accelerated window!")
         } else {
-            blurController.setBlurAutoUpdate(true);
+            blurController.setBlurAutoUpdate(true)
         }
     }
 
     /**
-     * @param rootView  root to start blur from.
-     *                  Can be Activity's root content layout (android.R.id.content)
-     *                  or (preferably) some of your layouts. The lower amount of Views are in the root, the better for performance.
-     * @param algorithm sets the blur algorithm
-     * @return {@link BlurView} to setup needed params.
+     * @param rootView Root view to start blur from. Can be the Activity's root content (android.R.id.content) or another layout.
+     * @param algorithm Sets the blur algorithm.
+     * @return BlurViewFacade to set additional parameters.
      */
-    public BlurViewFacade setupWith(@NonNull ViewGroup rootView, BlurAlgorithm algorithm) {
-        this.blurController.destroy();
-        BlurController blurController = new PreDrawBlurController(this, rootView, overlayColor, algorithm);
-        this.blurController = blurController;
-
-        return blurController;
+    fun setupWith(@NonNull rootView: ViewGroup, algorithm: BlurAlgorithm): BlurViewFacade {
+        blurController.destroy()
+        blurController = PreDrawBlurController(this, rootView, overlayColor, algorithm)
+        return blurController
     }
 
     /**
-     * @param rootView root to start blur from.
-     *                 Can be Activity's root content layout (android.R.id.content)
-     *                 or (preferably) some of your layouts. The lower amount of Views are in the root, the better for performance.
-     *                 <p>
-     *                 BlurAlgorithm is automatically picked based on the API version.
-     *                 It uses RenderEffectBlur on API 31+, and RenderScriptBlur on older versions.
-     * @return {@link BlurView} to setup needed params.
+     * Automatically picks the blur algorithm based on the API version.
+     * Uses RenderEffectBlur on API 31+, and RenderScriptBlur on older versions.
      */
-    public BlurViewFacade setupWith(@NonNull ViewGroup rootView) {
-        return setupWith(rootView, getBlurAlgorithm());
-    }
-
-    // Setters duplicated to be able to conveniently change these settings outside of setupWith chain
-
-    /**
-     * @see BlurViewFacade#setBlurRadius(float)
-     */
-    public BlurViewFacade setBlurRadius(float radius) {
-        return blurController.setBlurRadius(radius);
+    fun setupWith(@NonNull rootView: ViewGroup): BlurViewFacade {
+        return setupWith(rootView, getBlurAlgorithm())
     }
 
     /**
-     * @see BlurViewFacade#setOverlayColor(int)
+     * Set blur radius.
      */
-    public BlurViewFacade setOverlayColor(@ColorInt int overlayColor) {
-        this.overlayColor = overlayColor;
-        return blurController.setOverlayColor(overlayColor);
+    fun setBlurRadius(radius: Float): BlurViewFacade {
+        return blurController.setBlurRadius(radius)
     }
 
     /**
-     * @see BlurViewFacade#setBlurAutoUpdate(boolean)
+     * Set overlay color.
      */
-    public BlurViewFacade setBlurAutoUpdate(boolean enabled) {
-        return blurController.setBlurAutoUpdate(enabled);
+    fun setOverlayColor(@ColorInt overlayColor: Int): BlurViewFacade {
+        this.overlayColor = overlayColor
+        return blurController.setOverlayColor(overlayColor)
     }
 
     /**
-     * @see BlurViewFacade#setBlurEnabled(boolean)
+     * Enable or disable automatic blur updates.
      */
-    public BlurViewFacade setBlurEnabled(boolean enabled) {
-        return blurController.setBlurEnabled(enabled);
+    fun setBlurAutoUpdate(enabled: Boolean): BlurViewFacade {
+        return blurController.setBlurAutoUpdate(enabled)
+    }
+
+    /**
+     * Enable or disable the blur effect.
+     */
+    fun setBlurEnabled(enabled: Boolean): BlurViewFacade {
+        return blurController.setBlurEnabled(enabled)
     }
 
     @NonNull
-    private BlurAlgorithm getBlurAlgorithm() {
-        BlurAlgorithm algorithm;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            algorithm = new RenderEffectBlur();
+    private fun getBlurAlgorithm(): BlurAlgorithm {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            RenderEffectBlur()
         } else {
-            algorithm = new RenderScriptBlur(getContext());
+            RenderScriptBlur(context)
         }
-        return algorithm;
     }
 }

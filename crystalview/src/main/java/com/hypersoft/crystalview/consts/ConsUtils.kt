@@ -1,7 +1,7 @@
 package com.hypersoft.crystalview.consts
 
 object ConsUtils {
-    val radius = 25f
-    val minBlurRadius = 1f
-    val step = 4f
+    const val radius = 25f
+    const val minBlurRadius = 1f
+    const val step = 4f
 }
