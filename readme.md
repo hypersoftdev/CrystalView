@@ -90,7 +90,7 @@ private fun setupBlurView() {
 
 ## Screenshot
 
-![Demo Image](assets/screenshot.png)
+![Demo Image](https://github.com/hypersoftdev/CrystalView/blob/master/app/src/main/assets/screenshot.png)
 
 # Acknowledgements
 
