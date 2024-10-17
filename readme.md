@@ -88,6 +88,10 @@ private fun setupBlurView() {
         return algorithm
     }
 
+## Screenshot
+
+![Demo Image](assets/example.png)
+
 # Acknowledgements
 
 This work would not have been possible without the invaluable contributions of **Shafqat Hussain**. His expertise, dedication, and unwavering support have been instrumental in bringing this project to fruition.
