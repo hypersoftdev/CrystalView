@@ -2,7 +2,7 @@
 
 # CrystalView
 
-CrystalView
+CrystalView library for Android is a UI component designed to create a "crystal effect" on images. It applies a polygonal or low-poly-like overlay on images, giving them an artistic, geometric style
 
 ## Gradle Integration
 
